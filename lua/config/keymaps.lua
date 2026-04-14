@@ -149,3 +149,17 @@ vim.keymap.set("n", "<leader>S", "S", { desc = "Substitute line (Gallium)" })
 --   S = substitute line (use <leader>S in Gallium mode instead)
 map("", "Q", ":q<cr>", {})
 map("", "S", ":w<cr>", {})
+
+-- Open file explorer with <leader>pv (Primeagen style)
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open file explorer" })
+
+-- Move selected lines in visual mode
+-- J/K (capital) = move lines in QWERTY mode
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+
+-- Gallium style: H and A for move lines in visual mode
+-- H (Gallium down direction) = move selection down
+-- A (Gallium up direction) = move selection up
+vim.keymap.set("v", "H", ":m '>+1<CR>gv=gv", { desc = "Gallium: Move selection down" })
+vim.keymap.set("v", "A", ":m '<-2<CR>gv=gv", { desc = "Gallium: Move selection up" })
