@@ -3,27 +3,21 @@ return {
 
   -- TypeScript/JavaScript support
   -- Includes: typescript-language-server, eslint, prettier
-  { import = "lazyvim.plugins.extras.lang.typescript" },
 
   -- Python support
   -- Includes: pyright/basedpyright, ruff (linter & formatter)
-  { import = "lazyvim.plugins.extras.lang.python" },
 
   -- Go support
   -- Includes: gopls, gofmt, goimports
-  { import = "lazyvim.plugins.extras.lang.go" },
 
   -- Rust support
   -- Includes: rust-analyzer, rustfmt
-  { import = "lazyvim.plugins.extras.lang.rust" },
 
   -- Zig support
   -- Includes: zls (zig language server)
-  { import = "lazyvim.plugins.extras.lang.zig" },
 
   -- Elixir support
   -- Includes: elixir-ls (language server)
-  { import = "lazyvim.plugins.extras.lang.elixir" },
 
   -- Additional LSP server configurations
   {

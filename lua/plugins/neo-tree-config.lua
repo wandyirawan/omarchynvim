@@ -5,7 +5,23 @@
 return {
   {
     "nvim-neo-tree/neo-tree.nvim",
+    -- prevent extras’ auto-load and add Gallium navigation keys
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "neo-tree",
+        callback = function()
+          local km = vim.keymap.set
+          local o = { noremap = true, silent = true, buffer = true }
+          km("", "p", "<Left>", o)
+          km("", "h", "<Down>", o)
+          km("", "a", "<Up>", o)
+          km("", "i", "<Right>", o)
+        end,
+      })
+    end,
     opts = {
+      -- prevent auto-show on startup or Gallium toggle
+      auto_show = false,
       close_if_last_window = false,
       popup_border_style = "rounded",
       enable_git_status = true,
