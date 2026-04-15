@@ -68,9 +68,11 @@ return {
               includeInlayParameterNameHints = "all",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
               includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
+              -- DISABLED: Variable type hints (too verbose for Elysia types)
+              includeInlayVariableTypeHints = false,
               includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
+              -- DISABLED: Return type hints (too verbose for Elysia chain methods)
+              includeInlayFunctionLikeReturnTypeHints = false,
               includeInlayEnumMemberValueHints = true,
             },
             preferences = {
@@ -82,9 +84,11 @@ return {
               includeInlayParameterNameHints = "all",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
               includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
+              -- DISABLED: Variable type hints (too verbose for Elysia types)
+              includeInlayVariableTypeHints = false,
               includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
+              -- DISABLED: Return type hints (too verbose for Elysia chain methods)
+              includeInlayFunctionLikeReturnTypeHints = false,
               includeInlayEnumMemberValueHints = true,
             },
           },

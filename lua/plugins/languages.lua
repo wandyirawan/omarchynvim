@@ -33,15 +33,50 @@ return {
               or util.root_pattern("package.json", "tsconfig.json", "jsconfig.json")(fname)
               or util.find_git_ancestor(fname)
           end,
+          -- Custom handler to clean up verbose hover types
+          handlers = {
+            ["textDocument/hover"] = function(err, result, ctx, config)
+              if result and result.contents then
+                local contents = result.contents
+                local value = type(contents) == "table" and contents.value or contents
+
+                if type(value) == "string" then
+                  -- Clean up verbose Elysia types
+                  -- Pattern: Elysia<"...", { decorator: ... very long ... }>
+                  local cleaned = value:gsub(
+                    "(Elysia<[^>]+)%s*{[^}]*decorator:[^}]*}",
+                    "%1{ ... }"
+                  )
+                  -- Also clean up deeply nested generic parameters
+                  cleaned = cleaned:gsub("%s*{[^}]*store:[^}]*}", "{ ... }")
+                  cleaned = cleaned:gsub("%s*{[^}]*derive:[^}]*}", "{ ... }")
+                  cleaned = cleaned:gsub("%s*{[^}]*resolve:[^}]*}", "{ ... }")
+                  cleaned = cleaned:gsub("%s*{[^}]*typebox:[^}]*}", "{ ... }")
+                  cleaned = cleaned:gsub("%s*{[^}]*error:[^}]*}", "{ ... }")
+                  cleaned = cleaned:gsub("%s*{[^}]*schema:[^}]*}", "{ ... }")
+
+                  if type(contents) == "table" then
+                    result.contents.value = cleaned
+                  else
+                    result.contents = cleaned
+                  end
+                end
+              end
+              -- Call the default hover handler
+              return vim.lsp.handlers.hover(err, result, ctx, config)
+            end,
+          },
           settings = {
             typescript = {
               inlayHints = {
                 includeInlayParameterNameHints = "all",
                 includeInlayParameterNameHintsWhenArgumentMatchesName = false,
                 includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
+                -- DISABLED: Variable type hints (too verbose for Elysia types)
+                includeInlayVariableTypeHints = false,
                 includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
+                -- DISABLED: Return type hints (too verbose for Elysia chain methods)
+                includeInlayFunctionLikeReturnTypeHints = false,
                 includeInlayEnumMemberValueHints = true,
               },
               preferences = {
@@ -59,9 +94,11 @@ return {
                 includeInlayParameterNameHints = "all",
                 includeInlayParameterNameHintsWhenArgumentMatchesName = false,
                 includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
+                -- DISABLED: Variable type hints (too verbose for Elysia types)
+                includeInlayVariableTypeHints = false,
                 includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
+                -- DISABLED: Return type hints (too verbose for Elysia chain methods)
+                includeInlayFunctionLikeReturnTypeHints = false,
                 includeInlayEnumMemberValueHints = true,
               },
             },

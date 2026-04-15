@@ -163,3 +163,21 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 -- A (Gallium up direction) = move selection up
 vim.keymap.set("v", "H", ":m '>+1<CR>gv=gv", { desc = "Gallium: Move selection down" })
 vim.keymap.set("v", "A", ":m '<-2<CR>gv=gv", { desc = "Gallium: Move selection up" })
+
+-- Emergency keymap to kill ALL inlay hints immediately
+vim.keymap.set("n", "<leader>uH", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  -- Try new API first (Neovim 0.10+)
+  local ok = pcall(function()
+    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+  end)
+  if not ok then
+    -- Fallback to old API
+    pcall(function()
+      vim.lsp.inlay_hint.enable(bufnr, false)
+    end)
+  end
+  -- Also try to clear virtual text
+  vim.api.nvim_buf_clear_namespace(bufnr, -1, 0, -1)
+  vim.notify("All hints/virtual text cleared!", vim.log.levels.INFO)
+end, { desc = "KILL All Inlay Hints (Emergency)" })
