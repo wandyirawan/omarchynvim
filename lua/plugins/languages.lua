@@ -208,7 +208,6 @@ return {
 
         -- Rust tools
         "rust-analyzer",
-        "rustfmt",
 
         -- Zig tools
         "zls",
