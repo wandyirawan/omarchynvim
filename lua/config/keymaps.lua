@@ -45,37 +45,48 @@ end
 -- Original functions: j=insert, k=append, -=paste, m=substitute
 local function apply_gallium_mappings()
   -- ==================== NAVIGATION (Gallium → QWERTY) ====================
-  map("", "p", "h", {}) -- left
-  map("", "h", "j", {}) -- down
-  map("", "a", "k", {}) -- up
-  map("", "i", "l", {}) -- right
+  -- ONLY map for normal (n) and visual (v) modes, NOT insert mode
+  map("n", "p", "h", {}) -- left
+  map("v", "p", "h", {})
+  map("n", "h", "j", {}) -- down
+  map("v", "h", "j", {})
+  map("n", "a", "k", {}) -- up
+  map("v", "a", "k", {})
+  map("n", "i", "l", {}) -- right
+  map("v", "i", "l", {})
 
   -- Capital navigation
-  map("", "P", "H", {}) -- left (cap)
-  map("", "H", "J", {}) -- down (cap)
-  map("", "A", "K", {}) -- up (cap)
-  map("", "I", "L", {}) -- right (cap)
+  map("n", "P", "H", {}) -- left (cap)
+  map("v", "P", "H", {})
+  map("n", "H", "J", {}) -- down (cap)
+  map("v", "H", "J", {})
+  map("n", "A", "K", {}) -- up (cap)
+  map("v", "A", "K", {})
+  map("n", "I", "L", {}) -- right (cap)
+  map("v", "I", "L", {})
 
   -- ==================== ORIGINAL FUNCTIONS RESTORED ====================
   -- p (paste/put) → , (comma)
-  map("", ",", "p", {})
-  map("", "<", "P", {}) -- P = paste before
+  map("n", ",", "p", {})
+  map("v", ",", "p", {})
+  map("n", "<", "P", {}) -- P = paste before
+  map("v", "<", "P", {})
 
   -- i (insert) → j (Gallium home row!)
-  map("", "j", "i", {})
-  map("", "J", "I", {}) -- I = insert at BOL
+  map("n", "j", "i", {})
+  map("n", "J", "I", {}) -- I = insert at BOL
 
   -- a (append) → k (Gallium home row!)
-  map("", "k", "a", {})
-  map("", "K", "A", {}) -- A = append at EOL
+  map("n", "k", "a", {})
+  map("n", "K", "A", {}) -- A = append at EOL
 
   -- o/O (open new line) → n/N
-  map("", "n", "o", {}) -- open below
-  map("", "N", "O", {}) -- open above
+  map("n", "n", "o", {}) -- open below
+  map("n", "N", "O", {}) -- open above
 
   -- l (join lines) → Gallium L stays as L → J
-  map("", "l", "j", {}) -- join lines (l→j)
-  map("", "L", "J", {}) -- Join lines (cap)
+  map("n", "l", "j", {}) -- join lines (l→j)
+  map("n", "L", "J", {}) -- Join lines (cap)
 
   -- ==================== KEEP ORIGINAL (no remap) ====================
   -- r/R (replace) → keep original: r=replace char, R=replace mode
@@ -87,6 +98,10 @@ local function apply_gallium_mappings()
   -- c/C (change) → keep original: c=change, C=change to EOL
   -- d/D (delete) → keep original: d=delete, D=delete to EOL
 
+  -- ==================== GALLIUM EXCEPTIONS ====================
+  -- <leader>K → original K (keyword lookup) - because K is remapped to A
+  map("n", "<leader>K", "K", {})
+
   -- ==================== SUBSTITUTE (via leader, Gallium mode) ====================
   -- <leader>s = substitute character (original 's' - conflict with flash.nvim)
   -- <leader>S = substitute line (original 'S')
@@ -95,15 +110,18 @@ local function apply_gallium_mappings()
 end
 
 local function remove_gallium_mappings()
-  -- Remove Gallium mappings to restore normal QWERTY
+  -- Remove Gallium mappings from normal (n) and visual (v) modes
   local keys = { "p", "h", "a", "i", ",", "<", "j", "J", "k", "K", "n", "N", "l", "L", "P", "H", "A", "I" }
+  
   for _, key in ipairs(keys) do
-    unmap("", key)
+    unmap("n", key)  -- remove from normal mode
+    unmap("v", key)  -- remove from visual mode
   end
 
   -- Remove Gallium-specific leader mappings
   pcall(vim.api.nvim_del_keymap, "n", "<leader>s")
   pcall(vim.api.nvim_del_keymap, "n", "<leader>S")
+  pcall(vim.api.nvim_del_keymap, "n", "<leader>K")
 
   vim.notify("Normal QWERTY layout activated", vim.log.levels.INFO)
 end
